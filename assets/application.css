@@ -1,3 +1,31 @@
 .fade.in {
   opacity: 1;
 }
+html, body {
+  height: 100%;
+}
+.chat-conteiner {
+  height: 100%;
+}
+.container-fluid {
+  height: 90%;
+}
+.chat-loading {
+ background: no-repeat center url("http://ziremm.az/img/photo-loader.gif");
+}
+.chat-failed, .chat-show {
+  background: none;
+}
+li {
+  list-style-type: none;
+}
+ul {
+  margin-left: 0;
+  padding-left: 0;
+}
+.channel-list {
+  width: 100px;
+}
+.connect-warning {
+  left: 40%;
+}
