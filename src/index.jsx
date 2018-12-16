@@ -17,9 +17,10 @@ const enhancer = composeEnhancers(
 );
 
 export default ({ channels, messages, currentChannelId }) => {
+  const gonMessages = messages.filter(m => m.channelId === currentChannelId);
   const store = createStore(
     reducers,
-    { channels, messages, currentChannelId },
+    { channels, messages: gonMessages, currentChannelId },
     enhancer,
   );
   startSlack(store);
