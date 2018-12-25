@@ -1,5 +1,9 @@
 import React from 'react';
 import cn from 'classnames';
+import connect from '../connects/connect';
+import ChannelsModal from './modal/ChannelsModal';
+
+@connect
 
 class ChannelList extends React.Component {
  handleClick = id => (e) => {
@@ -7,16 +11,23 @@ class ChannelList extends React.Component {
    this.props.toggleChannel({ channelId: id });
  }
 
+ modalOpen = () => {
+   this.props.channelsModalShow();
+ }
+
  render() {
-   const { currentChannelId } = this.props;
+   const { currentChannelId, channels } = this.props;
    return (
-     <div className="text-white bg-info p-2 channel-list">
-       <ul>
-         {this.props.channels.map(({ id, name }) => {
+     <div className="text-white bg-primary p-2 channel-list">
+       <button type="button" className="btn btn-primary" onClick={this.modalOpen}>
+        Channels
+       </button>
+       <ChannelsModal />
+       <ul className="list-unstyled">
+         {channels.map(({ id, name }) => {
            const classList = cn({
-             badge: true,
-             'badge-info': currentChannelId !== id,
-             'badge-dark': currentChannelId === id,
+             'text-white': currentChannelId !== id,
+             'text-dark': currentChannelId === id,
            });
            return (
              <li key={id}>

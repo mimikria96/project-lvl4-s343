@@ -1,10 +1,10 @@
 doctype html
-html(lang="en")
+html(lang="en").h-100
   head
     title= Title
     script.
       var gon = !{JSON.stringify(gon)};
-  body
+  body.h-100
     nav.navbar.navbar-expand-lg.navbar-light.bg-faded
       a.navbar-brand(href="/") Chat
       button.navbar-toggler(data-toggle="collapse" data-target="#navbarSupportedContent")
@@ -13,5 +13,5 @@ html(lang="en")
         ul.navbar-nav.mr-auto
           li.nav-item.active
             a.nav-link(href="/") Home
-    #container.container-fluid
+    #container.container-fluid.h-100
     script(src='/assets/main.js')
