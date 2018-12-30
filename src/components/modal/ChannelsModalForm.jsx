@@ -1,14 +1,26 @@
 import React from 'react';
 import { Field, reduxForm } from 'redux-form';
+import _ from 'lodash';
 import { Button, ButtonToolbar } from 'react-bootstrap';
-import UseChannels from '../../connects/connect';
+import connect from '../../connects/connect';
 
-@UseChannels
+const mapStateToProps = ({ channels }) => {
+  const props = {
+    channels,
+  };
+  return props;
+};
+
+@reduxForm({
+  form: 'channelsModal',
+  enableReinitialize: true,
+})
+@connect(mapStateToProps)
 class ChannelsModalForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      channels: props.channels.reduce((acc, el) => ({ ...acc, [el.id]: { editing: false } }), {}),
+      channels: _.mapValues(props.channels, () => ({ editing: false })),
       changedChannel: '',
       formMode: 'reading',
     };
@@ -16,10 +28,7 @@ class ChannelsModalForm extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (this.props.channels !== nextProps.channels) {
-      this.setState({ channels: nextProps.channels.reduce((acc, el) => ({ ...acc, [el.id]: { editing: false } }), {}) });
-    }
-    if (this.props.initialValues !== nextProps.initialValues) {
-      console.log(nextProps.initialValues);
+      this.setState({ channels: _.mapValues(nextProps.channels, el => ({ ...el, editing: false })) });
     }
   }
 
@@ -29,7 +38,10 @@ class ChannelsModalForm extends React.Component {
     return this.props.renameChannel({ id, name: values[name] });
   }
 
-  deleteChannel = id => () => this.props.deleteChannel(id);
+  deleteChannel = id => () => {
+    this.props.deleteChannel(id);
+    this.handleCancel(id)();
+  }
 
   handleCancel = id => () => {
     const { channels } = this.state;
@@ -58,7 +70,7 @@ class ChannelsModalForm extends React.Component {
     return (
       <form onSubmit={handleSubmit(this.submit)}>
         <ul className="list-group">
-          {this.props.channels.map(el => (
+          {Object.values(this.props.channels).map(el => (
             <li key={el.id} className="list-group-item">
               {this.state.channels[el.id].editing ? (
                 <div>
@@ -93,7 +105,4 @@ class ChannelsModalForm extends React.Component {
   }
 }
 
-export default reduxForm({
-  form: 'channelsModal',
-  enableReinitialize: true,
-})(ChannelsModalForm);
+export default ChannelsModalForm;

@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 import { handleActions } from 'redux-actions';
 import { reducer as formReducer } from 'redux-form';
+import _ from 'lodash';
 import * as actions from '../actions';
 
 
@@ -66,29 +67,28 @@ const appConnectionState = handleActions({
 
 
 const messages = handleActions({
-  [actions.addMessage](state, { payload: { attributes } }) {
-    return [...state, { ...attributes }];
+  [actions.addMessage](state, { payload: { id, attributes } }) {
+    return { ...state, [id]: { ...attributes } };
   },
-  [actions.toggleChannelSuccess](state, { payload: { attributes } }) {
-    return attributes.map(m => m.attributes);
+  [actions.toggleChannelSuccess](state, { payload: { data } }) {
+    return data.reduce((acc, m) => ({ ...acc, [m.id]: m.attributes }), {});
   },
   [actions.channelDelete](state, { payload: { id } }) {
-    return state.filter(m => m.id !== id);
+    return _.omitBy(state, m => m.id === id);
   },
-}, []);
+}, {});
 
 const channels = handleActions({
   [actions.channelRename](state, { payload: { id, channel } }) {
-    const newState = state.map(el => (el.id === id ? channel : el));
-    return newState;
+    return { ...state, [id]: channel };
   },
   [actions.channelDelete](state, { payload: { id } }) {
-    return state.filter(c => c.id !== id);
+    return _.omit(state, id);
   },
-  [actions.channelAdd](state, { payload }) {
-    return [...state, payload];
+  [actions.channelAdd](state, { payload: { id, channel } }) {
+    return { ...state, [id]: channel };
   },
-}, []);
+}, {});
 
 
 export default combineReducers({

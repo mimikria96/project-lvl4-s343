@@ -1,15 +1,13 @@
 import { createSelector } from 'reselect';
 
-export const getMessages = state => state.messages;
-export const tasksSelector = createSelector(
+export const getMessages = messages => messages;
+export const messagesSelector = createSelector(
   getMessages,
   messages => Object.values(messages),
 );
-export const generalMessagesSelector = createSelector(
-  tasksSelector,
-  messages => messages.filter(m => m.channel === 'general'),
-);
-export const randomMessagesSelector = createSelector(
-  tasksSelector,
-  messages => messages.filter(m => m.channel === 'random'),
+
+export const getChannels = channels => channels;
+export const channelsSelector = createSelector(
+  getChannels,
+  channels => Object.values(channels),
 );

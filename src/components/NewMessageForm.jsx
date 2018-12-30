@@ -1,16 +1,24 @@
 import React from 'react';
 import { Field, reduxForm } from 'redux-form';
-import Cookeis from 'js-cookie';
 import connect from '../connects/connect';
+import CookieContext from '../contextes/cookieContext';
 
-@connect
-
+const mapStateToProps = ({ currentChannelId }) => {
+  const props = {
+    currentChannelId,
+  };
+  return props;
+};
+@reduxForm({
+  form: 'newMessage',
+})
+@connect(mapStateToProps)
 class NewMessageForm extends React.Component {
-  state = { userName: Cookeis.get('UserName') };
+  static contextType = CookieContext;
 
   submit = (values) => {
     this.props.reset();
-    return this.props.sendMessage({ channelId: this.props.currentChannelId, message: { userName: this.state.userName, ...values } });
+    return this.props.sendMessage({ channelId: this.props.currentChannelId, message: { userName: this.context, ...values } });
   };
 
   render() {
@@ -32,6 +40,4 @@ class NewMessageForm extends React.Component {
   }
 }
 
-export default reduxForm({
-  form: 'newMessage',
-})(NewMessageForm);
+export default NewMessageForm;

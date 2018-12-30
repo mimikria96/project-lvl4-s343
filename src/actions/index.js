@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { SubmissionError } from 'redux-form';
 import { createAction } from 'redux-actions';
+import routes from '../routes.js';
 
 export const toggleChannelRequest = createAction('CHANNEL_TOGGLE_REQUEST');
 export const toggleChannelSuccess = createAction('CHANNEL_TOGGLE_SUCCESS');
@@ -30,7 +31,7 @@ export const sendMessageFailure = createAction('MESSAGE_ADD_FAILURE');
 
 export const addNewChannel = ({ name }) => async (dispatch) => {
   try {
-    await axios.post('/api/v1/channels', { data: { attributes: { name } } });
+    await axios.post(routes.channels(), { data: { attributes: { name } } });
     dispatch(addChannelSuccess());
   } catch (e) {
     dispatch(addChannelFailure());
@@ -39,7 +40,7 @@ export const addNewChannel = ({ name }) => async (dispatch) => {
 
 export const deleteChannel = id => async (dispatch) => {
   try {
-    await axios.delete(`/api/v1/channels/${id}`, { params: { id } });
+    await axios.delete(routes.channelChange(id), { params: { id } });
     dispatch(deleteChannelSuccess());
   } catch {
     dispatch(deleteChannelFailure());
@@ -48,7 +49,7 @@ export const deleteChannel = id => async (dispatch) => {
 
 export const renameChannel = ({ id, name }) => async (dispatch) => {
   try {
-    await axios.patch(`/api/v1/channels/${id}`, { params: { id }, data: { attributes: { name } } });
+    await axios.patch(routes.channelChange(id), { params: { id }, data: { attributes: { name } } });
     dispatch(channelRenameSuccess());
   } catch (e) {
     dispatch(channelRenameFailure());
@@ -61,8 +62,8 @@ export const renameChannel = ({ id, name }) => async (dispatch) => {
 export const toggleChannel = ({ channelId }) => async (dispatch) => {
   dispatch(toggleChannelRequest());
   try {
-    const response = await axios.get(`/api/v1/channels/${channelId}/messages`, { params: { channelId } });
-    dispatch(toggleChannelSuccess({ attributes: response.data, channelId }));
+    const response = await axios.get(routes.channelAction(channelId), { params: { channelId } });
+    dispatch(toggleChannelSuccess({ data: response.data, channelId }));
   } catch (e) {
     dispatch(toggleChannelFailure());
   }
@@ -70,7 +71,7 @@ export const toggleChannel = ({ channelId }) => async (dispatch) => {
 
 export const sendMessage = ({ channelId, message }) => async (dispatch) => {
   try {
-    await axios.post(`/api/v1/channels/${channelId}/messages`, { data: { attributes: message } });
+    await axios.post(routes.channelAction(channelId), { data: { attributes: message } });
     dispatch(sendMessageSuccess());
   } catch (e) {
     dispatch(sendMessageFailure());

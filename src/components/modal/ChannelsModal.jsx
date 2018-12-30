@@ -3,9 +3,18 @@ import { Button, Modal } from 'react-bootstrap';
 import connect from '../../connects/connect';
 import NewChannelForm from './NewChannelForm';
 import ChannelsModalForm from './ChannelsModalForm';
+import { channelsSelector } from '../../selectors';
 
-@connect
+const mapStateToProps = ({ channels, channelsModalState, appConnectionState }) => {
+  const props = {
+    channels: channelsSelector(channels),
+    channelsModalState,
+    appConnectionState,
+  };
+  return props;
+};
 
+@connect(mapStateToProps)
 class ChannelsModal extends React.Component {
   state = { addChannelForm: 'hide' };
 

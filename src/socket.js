@@ -12,7 +12,7 @@ export default function (store) {
     .on('removeChannel', ({ data: { id } }) => {
       store.dispatch(actions.channelDelete({ id }));
     })
-    .on('newChannel', ({ data: { attributes } }) => {
-      store.dispatch(actions.channelAdd(attributes));
+    .on('newChannel', ({ data: { id, attributes } }) => {
+      store.dispatch(actions.channelAdd({ id, channel: attributes }));
     });
 }

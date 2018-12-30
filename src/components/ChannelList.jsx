@@ -2,9 +2,18 @@ import React from 'react';
 import cn from 'classnames';
 import connect from '../connects/connect';
 import ChannelsModal from './modal/ChannelsModal';
+import { channelsSelector } from '../selectors';
+import routes from '../routes.js';
 
-@connect
+const mapStateToProps = ({ channels, currentChannelId }) => {
+  const props = {
+    channels: channelsSelector(channels),
+    currentChannelId,
+  };
+  return props;
+};
 
+@connect(mapStateToProps)
 class ChannelList extends React.Component {
  handleClick = id => (e) => {
    e.preventDefault();
@@ -31,7 +40,7 @@ class ChannelList extends React.Component {
            });
            return (
              <li key={id}>
-               <a className={classList} onClick={this.handleClick(id)} href={`/channels/${id}/messages`}>{name}</a>
+               <a className={classList} onClick={this.handleClick(id)} href={routes.channelAction(id)}>{name}</a>
              </li>
            );
          })}
