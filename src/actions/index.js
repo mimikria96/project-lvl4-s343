@@ -42,7 +42,8 @@ export const deleteChannel = id => async (dispatch) => {
   try {
     await axios.delete(routes.channelChange(id), { params: { id } });
     dispatch(deleteChannelSuccess());
-  } catch {
+  } catch (e) {
+    console.log(e);
     dispatch(deleteChannelFailure());
   }
 };
@@ -52,6 +53,7 @@ export const renameChannel = ({ id, name }) => async (dispatch) => {
     await axios.patch(routes.channelChange(id), { params: { id }, data: { attributes: { name } } });
     dispatch(channelRenameSuccess());
   } catch (e) {
+    console.log(e);
     dispatch(channelRenameFailure());
     throw new SubmissionError({
       _error: 'You are not connect, try again!',
@@ -65,6 +67,7 @@ export const toggleChannel = ({ channelId }) => async (dispatch) => {
     const response = await axios.get(routes.channelAction(channelId), { params: { channelId } });
     dispatch(toggleChannelSuccess({ data: response.data, channelId }));
   } catch (e) {
+    console.log(e);
     dispatch(toggleChannelFailure());
   }
 };
@@ -74,6 +77,7 @@ export const sendMessage = ({ channelId, message }) => async (dispatch) => {
     await axios.post(routes.channelAction(channelId), { data: { attributes: message } });
     dispatch(sendMessageSuccess());
   } catch (e) {
+    console.log(e);
     dispatch(sendMessageFailure());
     throw new SubmissionError({
       _error: 'You are not connect, try later!',

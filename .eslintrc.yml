@@ -19,3 +19,4 @@ rules:
   max-len: ["error", { code: 150 }]
   react/destructuring-assignment: 0
   react/jsx-one-expression-per-line: 0
+  no-console: 0

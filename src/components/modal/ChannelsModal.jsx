@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Modal } from 'react-bootstrap';
-import connect from '../../connects/connect';
+import connect from '../../connect';
 import NewChannelForm from './NewChannelForm';
 import ChannelsModalForm from './ChannelsModalForm';
 import { channelsSelector } from '../../selectors';
@@ -35,6 +35,36 @@ class ChannelsModal extends React.Component {
     this.props.channelsModalHide();
   }
 
+  renderChannelForm() {
+    if (this.state.addChannelForm !== 'show') {
+      return null;
+    }
+    return (
+      <div className="d-flex">
+        <NewChannelForm onSubmit={this.newChannelSubmit} />
+        <Button variant="warning" onClick={this.hideForm}>
+       cancel
+        </Button>
+      </div>);
+  }
+
+  renderAddButton() {
+    if (this.state.addChannelForm !== 'hide') {
+      return null;
+    }
+    return (
+      <Button variant="success" className="mb-1" onClick={this.showForm}>
+       new channel +
+      </Button>);
+  }
+
+  renderNerworkError() {
+    if (this.props.appConnectionState !== 'failed') {
+      return null;
+    }
+    return <div className="text-grey text-center">Try your network connection</div>;
+  }
+
   render() {
     const initialValues = this.props.channels.reduce((acc, el) => ({ ...acc, [el.name]: el.name }), {});
     return (
@@ -45,21 +75,9 @@ class ChannelsModal extends React.Component {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {this.props.appConnectionState === 'failed' ? <div className="text-grey text-center">Try your network connection</div> : ''}
-          {this.state.addChannelForm === 'hide' ? (
-            <Button variant="success" className="mb-1" onClick={this.showForm}>
-          new channel +
-            </Button>
-          )
-            : (
-              <div className="d-flex">
-                <NewChannelForm onSubmit={this.newChannelSubmit} />
-                <Button variant="warning" onClick={this.hideForm}>
-                cancel
-                </Button>
-              </div>
-            )
-         }
+          {this.renderNerworkError()}
+          {this.renderAddButton()}
+          {this.renderChannelForm()}
           <ChannelsModalForm initialValues={initialValues} />
         </Modal.Body>
       </Modal>

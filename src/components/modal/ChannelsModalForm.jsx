@@ -1,12 +1,12 @@
 import React from 'react';
 import { Field, reduxForm } from 'redux-form';
-import _ from 'lodash';
 import { Button, ButtonToolbar } from 'react-bootstrap';
-import connect from '../../connects/connect';
+import connect from '../../connect';
+import { channelsSelector } from '../../selectors';
 
 const mapStateToProps = ({ channels }) => {
   const props = {
-    channels,
+    channels: channelsSelector(channels),
   };
   return props;
 };
@@ -20,7 +20,7 @@ class ChannelsModalForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      channels: _.mapValues(props.channels, () => ({ editing: false })),
+      channels: props.channels.reduce((acc, el) => ({ ...acc, [el.id]: { editing: false } }), {}),
       changedChannel: '',
       formMode: 'reading',
     };
@@ -28,7 +28,7 @@ class ChannelsModalForm extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (this.props.channels !== nextProps.channels) {
-      this.setState({ channels: _.mapValues(nextProps.channels, el => ({ ...el, editing: false })) });
+      this.setState({ channels: nextProps.channels.reduce((acc, el) => ({ ...acc, [el.id]: { editing: false } }), {}) });
     }
   }
 
@@ -65,40 +65,40 @@ class ChannelsModalForm extends React.Component {
     });
   }
 
+  renderChannelList() {
+    return this.props.channels.map(el => (
+      <li key={el.id} className="list-group-item">
+        {this.state.channels[el.id].editing ? (
+          <div>
+            <Field name={el.name} onFocus={this.setChangedChannel({ id: el.id, name: el.name })} required component="input" type="text" />
+            {this.props.error}
+            <ButtonToolbar>
+              <Button variant="primary" size="sm" type="submit">
+               edit
+              </Button>
+              {el.removable && <Button variant="danger" size="sm" onClick={this.deleteChannel(el.id)}>delete</Button>}
+              <Button variant="warning" size="sm" onClick={this.handleCancel(el.id)}>
+               cancel
+              </Button>
+            </ButtonToolbar>
+          </div>)
+          : (
+            <div>
+              <span className="mr-1">{el.name}</span>
+              <Button variant="primary" size="sm" disabled={this.state.formMode !== 'reading'} onClick={this.setEditingMod(el.id)}>
+              settings
+              </Button>
+            </div>)
+        }
+      </li>
+    ));
+  }
+
   render() {
-    const { handleSubmit, error } = this.props;
     return (
-      <form onSubmit={handleSubmit(this.submit)}>
+      <form onSubmit={this.props.handleSubmit(this.submit)}>
         <ul className="list-group">
-          {Object.values(this.props.channels).map(el => (
-            <li key={el.id} className="list-group-item">
-              {this.state.channels[el.id].editing ? (
-                <div>
-                  <Field name={el.name} onFocus={this.setChangedChannel({ id: el.id, name: el.name })} required component="input" type="text" />
-                  {error}
-                  <ButtonToolbar>
-                    <Button variant="primary" size="sm" type="submit">
-                     edit
-                    </Button>
-                    {!el.removable ? ''
-                      : <Button variant="danger" size="sm" onClick={this.deleteChannel(el.id)}>delete</Button>
-                   }
-                    <Button variant="warning" size="sm" onClick={this.handleCancel(el.id)}>
-                    cancel
-                    </Button>
-                  </ButtonToolbar>
-                </div>
-              ) : (
-                <div>
-                  <span className="mr-1">{el.name}</span>
-                  <Button variant="primary" size="sm" disabled={this.state.formMode !== 'reading'} onClick={this.setEditingMod(el.id)}>
-                  settings
-                  </Button>
-                </div>
-              )
-              }
-            </li>
-          ))}
+          {this.renderChannelList()}
         </ul>
       </form>
     );

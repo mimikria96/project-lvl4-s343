@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { createStore, applyMiddleware, compose } from 'redux';
 import Cookies from 'js-cookie';
+import _ from 'lodash';
 import reducers from './reducers';
 import App from './components/App.jsx';
 import startSlack from './socket.js';
@@ -25,8 +26,8 @@ export default ({ channels, messages, currentChannelId }) => {
   const store = createStore(
     reducers,
     {
-      channels: channels.reduce((acc, el) => ({ ...acc, [el.id]: el }), {}),
-      messages: gonMessages.reduce((acc, el) => ({ ...acc, [el.id]: el }), {}),
+      channels: _.keyBy(channels, 'id'),
+      messages: _.keyBy(gonMessages, 'id'),
       currentChannelId,
     },
     enhancer,

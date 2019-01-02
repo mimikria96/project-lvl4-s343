@@ -1,6 +1,6 @@
 import React from 'react';
 import cn from 'classnames';
-import connect from '../connects/connect';
+import connect from '../connect';
 import { messagesSelector } from '../selectors';
 
 const mapStateToProps = ({ messages, appConnectionState }) => {
@@ -14,12 +14,13 @@ const mapStateToProps = ({ messages, appConnectionState }) => {
 @connect(mapStateToProps)
 class MessagesList extends React.Component {
   renderConnectionError() {
-    return this.props.connectionState === 'failed'
-      && (
+    if (this.props.connectionState !== 'failed') {
+      return null;
+    }
+    return (
       <div className="position-absolute w-100">
         <div className="w-25 text-center mx-auto bg-warning connect-warning">Try your network connection</div>
-      </div>
-      );
+      </div>);
   }
 
   render() {

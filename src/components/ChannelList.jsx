@@ -1,6 +1,6 @@
 import React from 'react';
 import cn from 'classnames';
-import connect from '../connects/connect';
+import connect from '../connect';
 import ChannelsModal from './modal/ChannelsModal';
 import { channelsSelector } from '../selectors';
 import routes from '../routes.js';

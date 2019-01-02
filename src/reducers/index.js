@@ -74,7 +74,7 @@ const messages = handleActions({
     return data.reduce((acc, m) => ({ ...acc, [m.id]: m.attributes }), {});
   },
   [actions.channelDelete](state, { payload: { id } }) {
-    return _.omitBy(state, m => m.id === id);
+    return _.omit(state, id);
   },
 }, {});
 
