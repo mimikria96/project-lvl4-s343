@@ -14,7 +14,8 @@ const mapStateToProps = ({ messages, appConnectionState }) => {
 @connect(mapStateToProps)
 class MessagesList extends React.Component {
   renderConnectionError() {
-    if (this.props.connectionState !== 'failed') {
+    const {connectionState } = this.props;
+    if (connectionState !== 'failed') {
       return null;
     }
     return (
@@ -24,15 +25,20 @@ class MessagesList extends React.Component {
   }
 
   render() {
+    const { chatToggleState, messages } = this.props;
     const chatClassList = cn({
       chat_space: true,
       'flex-grow-1 bg-light position-relative pl-2': true,
-      [`chat-${this.props.chatToggleState}`]: true,
+      [`chat-${chatToggleState}`]: true,
     });
     return (
       <div className={chatClassList}>
         {this.renderConnectionError()}
-        {this.props.messages.map(el => <div key={el.id}>{el.userName}: <span>{el.text}</span></div>)}
+        {messages.map(el => (
+          <div key={el.id}>
+            {`${el.userName}: `}
+            <span>{el.text}</span>
+          </div>))}
       </div>
     );
   }

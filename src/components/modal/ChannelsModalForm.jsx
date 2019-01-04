@@ -4,9 +4,11 @@ import { Button, ButtonToolbar } from 'react-bootstrap';
 import connect from '../../connect';
 import { channelsSelector } from '../../selectors';
 
-const mapStateToProps = ({ channels }) => {
+const mapStateToProps = ({ uiModalState, channels, uiChannels }) => {
   const props = {
     channels: channelsSelector(channels),
+    uiChannels,
+    uiModalState,
   };
   return props;
 };
@@ -17,88 +19,82 @@ const mapStateToProps = ({ channels }) => {
 })
 @connect(mapStateToProps)
 class ChannelsModalForm extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      channels: props.channels.reduce((acc, el) => ({ ...acc, [el.id]: { editing: false } }), {}),
-      changedChannel: '',
-      formMode: 'reading',
-    };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (this.props.channels !== nextProps.channels) {
-      this.setState({ channels: nextProps.channels.reduce((acc, el) => ({ ...acc, [el.id]: { editing: false } }), {}) });
-    }
-  }
-
   submit = (values) => {
-    const { id, name } = this.state.changedChannel;
-    this.handleCancel(id)();
-    return this.props.renameChannel({ id, name: values[name] });
+    const { uiModalState, cancelChannelEdit, renameChannel } = this.props;
+    const { id, name } = uiModalState.changedChannel;
+    cancelChannelEdit(id);
+    return renameChannel({ id, name: values[name] });
   }
 
   deleteChannel = id => () => {
-    this.props.deleteChannel(id);
-    this.handleCancel(id)();
+    const { deleteChannel, cancelChannelEdit } = this.props;
+    deleteChannel(id);
+    cancelChannelEdit(id);
   }
 
   handleCancel = id => () => {
-    const { channels } = this.state;
-    this.setState({
-      channels: { ...channels, [id]: { editing: false } },
-      formMode: 'reading',
-      changedChannel: '',
-    });
-    this.props.reset();
+    const { cancelChannelEdit, reset } = this.props;
+    cancelChannelEdit(id);
+    reset();
   }
 
-  setChangedChannel = ({ id, name }) => () => {
-    this.setState({ changedChannel: { id, name } });
+  setEditingChannel = ({ id, name }) => () => {
+    const { setEditingChannel } = this.props;
+    setEditingChannel({ id, name });
   }
 
-  setEditingMod = id => () => {
-    const { channels } = this.state;
-    this.setState({
-      channels: { ...channels, [id]: { editing: true } },
-      formMode: 'editing',
-    });
+  setEditingMode = id => () => {
+    const { setEditingModalFormMode } = this.props;
+    setEditingModalFormMode(id);
   }
 
-  renderChannelList() {
-    return this.props.channels.map(el => (
-      <li key={el.id} className="list-group-item">
-        {this.state.channels[el.id].editing ? (
-          <div>
-            <Field name={el.name} onFocus={this.setChangedChannel({ id: el.id, name: el.name })} required component="input" type="text" />
-            {this.props.error}
-            <ButtonToolbar>
-              <Button variant="primary" size="sm" type="submit">
-               edit
-              </Button>
-              {el.removable && <Button variant="danger" size="sm" onClick={this.deleteChannel(el.id)}>delete</Button>}
-              <Button variant="warning" size="sm" onClick={this.handleCancel(el.id)}>
-               cancel
-              </Button>
-            </ButtonToolbar>
-          </div>)
-          : (
-            <div>
-              <span className="mr-1">{el.name}</span>
-              <Button variant="primary" size="sm" disabled={this.state.formMode !== 'reading'} onClick={this.setEditingMod(el.id)}>
-              settings
-              </Button>
-            </div>)
-        }
-      </li>
-    ));
+  renderEditingChannel(el) {
+    const { uiChannels, error } = this.props;
+    if (!uiChannels[el.id].editing) {
+      return null;
+    }
+    return (
+      <div>
+        <Field name={el.name} onFocus={this.setEditingChannel({ id: el.id, name: el.name })} required component="input" type="text" />
+        {error}
+        <ButtonToolbar>
+          <Button variant="primary" size="sm" type="submit">
+         edit
+          </Button>
+          {el.removable && <Button variant="danger" size="sm" onClick={this.deleteChannel(el.id)}>delete</Button>}
+          <Button variant="warning" size="sm" onClick={this.handleCancel(el.id)}>
+         cancel
+          </Button>
+        </ButtonToolbar>
+      </div>
+    );
+  }
+
+  renderChannelButton(el) {
+    const { uiChannels, uiModalState } = this.props;
+    if (uiChannels[el.id].editing) {
+      return null;
+    }
+    return (
+      <div>
+        <span className="mr-1">{el.name}</span>
+        <Button variant="primary" size="sm" disabled={uiModalState.formMode !== 'reading'} onClick={this.setEditingMode(el.id)}>
+       settings
+        </Button>
+      </div>
+    );
   }
 
   render() {
+    const { handleSubmit, channels } = this.props;
     return (
-      <form onSubmit={this.props.handleSubmit(this.submit)}>
+      <form onSubmit={handleSubmit(this.submit)}>
         <ul className="list-group">
-          {this.renderChannelList()}
+          {channels.map(el => (
+            <li key={el.id} className="list-group-item">
+              {this.renderEditingChannel(el)}
+              {this.renderChannelButton(el)}
+            </li>))}
         </ul>
       </form>
     );

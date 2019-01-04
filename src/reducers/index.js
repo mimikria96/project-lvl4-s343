@@ -90,6 +90,33 @@ const channels = handleActions({
   },
 }, {});
 
+const uiModalState = handleActions({
+  [actions.cancelChannelEdit]() {
+    return { changedChannel: '', formMode: 'reading' };
+  },
+  [actions.setEditingChannel](state, { payload: { id, name } }) {
+    return { ...state, changedChannel: { id, name } };
+  },
+  [actions.setEditingModalFormMode](state) {
+    return { ...state, formMode: 'editing' };
+  },
+  [actions.channelDelete](state, { payload: { id } }) {
+    return _.omit(state, id);
+  },
+}, { changedChannel: '', formMode: 'reading' });
+
+const uiChannels = handleActions({
+  [actions.cancelChannelEdit](state, { payload }) {
+    return { ...state, [payload]: { editing: false } };
+  },
+  [actions.setEditingModalFormMode](state, { payload }) {
+    return { ...state, [payload]: { editing: true } };
+  },
+  [actions.channelAdd](state, { payload: { id } }) {
+    return { ...state, [id]: { editing: false } };
+  },
+}, {});
+
 
 export default combineReducers({
   form: formReducer,
@@ -99,4 +126,6 @@ export default combineReducers({
   appConnectionState,
   chatToggleState,
   channelsModalState,
+  uiModalState,
+  uiChannels,
 });

@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect';
 
+
 export const getMessages = messages => messages;
 export const messagesSelector = createSelector(
   getMessages,

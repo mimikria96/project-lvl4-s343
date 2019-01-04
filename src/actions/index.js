@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { SubmissionError } from 'redux-form';
 import { createAction } from 'redux-actions';
-import routes from '../routes.js';
+import routes from '../routes';
 
 export const toggleChannelRequest = createAction('CHANNEL_TOGGLE_REQUEST');
 export const toggleChannelSuccess = createAction('CHANNEL_TOGGLE_SUCCESS');
@@ -28,6 +28,10 @@ export const appNormalConnection = createAction('APP_CONNECTION_NORMAL');
 export const addMessage = createAction('MESSAGE_ADD');
 export const sendMessageSuccess = createAction('MESSAGE_ADD_SUCCESS');
 export const sendMessageFailure = createAction('MESSAGE_ADD_FAILURE');
+
+export const cancelChannelEdit = createAction('CHANNEL_EDIT_CANCEL');
+export const setEditingChannel = createAction('CHANNEL_SET_EDITING');
+export const setEditingModalFormMode = createAction('MODAL_FORM_SET_EDITING');
 
 export const addNewChannel = ({ name }) => async (dispatch) => {
   try {

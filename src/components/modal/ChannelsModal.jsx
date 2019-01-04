@@ -19,7 +19,8 @@ class ChannelsModal extends React.Component {
   state = { addChannelForm: 'hide' };
 
   newChannelSubmit = (values) => {
-    this.props.addNewChannel(values);
+    const { addNewChannel } = this.props;
+    addNewChannel(values);
     this.hideForm();
   }
 
@@ -32,11 +33,13 @@ class ChannelsModal extends React.Component {
   }
 
   modalHide = () => {
-    this.props.channelsModalHide();
+    const { channelsModalHide } = this.props;
+    channelsModalHide();
   }
 
   renderChannelForm() {
-    if (this.state.addChannelForm !== 'show') {
+    const { addChannelForm } = this.state;
+    if (addChannelForm !== 'show') {
       return null;
     }
     return (
@@ -49,7 +52,8 @@ class ChannelsModal extends React.Component {
   }
 
   renderAddButton() {
-    if (this.state.addChannelForm !== 'hide') {
+    const { addChannelForm } = this.state;
+    if (addChannelForm !== 'hide') {
       return null;
     }
     return (
@@ -59,16 +63,18 @@ class ChannelsModal extends React.Component {
   }
 
   renderNerworkError() {
-    if (this.props.appConnectionState !== 'failed') {
+    const { appConnectionState } = this.props;
+    if (appConnectionState !== 'failed') {
       return null;
     }
     return <div className="text-grey text-center">Try your network connection</div>;
   }
 
   render() {
-    const initialValues = this.props.channels.reduce((acc, el) => ({ ...acc, [el.name]: el.name }), {});
+    const { channels, channelsModalState } = this.props;
+    const initialValues = channels.reduce((acc, el) => ({ ...acc, [el.name]: el.name }), {});
     return (
-      <Modal show={this.props.channelsModalState === 'show'} onHide={this.modalHide}>
+      <Modal show={channelsModalState === 'show'} onHide={this.modalHide}>
         <Modal.Header closeButton>
           <Modal.Title>
             Channels

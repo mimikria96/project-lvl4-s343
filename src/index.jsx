@@ -6,8 +6,8 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import Cookies from 'js-cookie';
 import _ from 'lodash';
 import reducers from './reducers';
-import App from './components/App.jsx';
-import startSlack from './socket.js';
+import App from './components/App';
+import startSlack from './socket';
 import CookieContext from './contextes/cookieContext';
 
 
@@ -29,6 +29,7 @@ export default ({ channels, messages, currentChannelId }) => {
       channels: _.keyBy(channels, 'id'),
       messages: _.keyBy(gonMessages, 'id'),
       currentChannelId,
+      uiChannels: _.mapValues(_.keyBy(channels, 'id'), () => ({ editing: false })),
     },
     enhancer,
   );

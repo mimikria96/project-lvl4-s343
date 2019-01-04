@@ -14,8 +14,11 @@ const mapStateToProps = ({ currentChannelId }) => {
 @connect(mapStateToProps)
 class NewMessageForm extends React.Component {
   submit = (values) => {
-    this.props.reset();
-    return this.props.sendMessage({ channelId: this.props.currentChannelId, message: { userName: this.props.userName, ...values } });
+    const {
+      reset, sendMessage, currentChannelId, userName,
+    } = this.props;
+    reset();
+    return sendMessage({ channelId: currentChannelId, message: { userName, ...values } });
   };
 
   render() {

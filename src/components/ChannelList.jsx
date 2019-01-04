@@ -3,7 +3,7 @@ import cn from 'classnames';
 import connect from '../connect';
 import ChannelsModal from './modal/ChannelsModal';
 import { channelsSelector } from '../selectors';
-import routes from '../routes.js';
+import routes from '../routes';
 
 const mapStateToProps = ({ channels, currentChannelId }) => {
   const props = {
@@ -16,12 +16,14 @@ const mapStateToProps = ({ channels, currentChannelId }) => {
 @connect(mapStateToProps)
 class ChannelList extends React.Component {
  handleClick = id => (e) => {
+   const { toggleChannel } = this.props;
    e.preventDefault();
-   this.props.toggleChannel({ channelId: id });
+   toggleChannel({ channelId: id });
  }
 
  modalOpen = () => {
-   this.props.channelsModalShow();
+   const { channelsModalShow } = this.props;
+   channelsModalShow();
  }
 
  render() {
@@ -38,9 +40,14 @@ class ChannelList extends React.Component {
              'text-white': currentChannelId !== id,
              'text-dark': currentChannelId === id,
            });
+           const linkProperties = {
+             className: classList,
+             onClick: this.handleClick(id),
+             href: routes.channelAction(id),
+           };
            return (
              <li key={id}>
-               <a className={classList} onClick={this.handleClick(id)} href={routes.channelAction(id)}>{name}</a>
+               <a {...linkProperties}>{name}</a>
              </li>
            );
          })}
