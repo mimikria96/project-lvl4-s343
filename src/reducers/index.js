@@ -32,6 +32,15 @@ const channelsModalState = handleActions({
   },
 }, 'hide');
 
+const channelsAddingForm = handleActions({
+  [actions.channelsAddingFormShow]() {
+    return 'show';
+  },
+  [actions.channelsAddingFormHide]() {
+    return 'hide';
+  },
+}, 'hide');
+
 const appConnectionState = handleActions({
   [actions.toggleChannelFailure]() {
     return 'failed';
@@ -128,4 +137,5 @@ export default combineReducers({
   channelsModalState,
   uiModalState,
   uiChannels,
+  channelsAddingForm,
 });

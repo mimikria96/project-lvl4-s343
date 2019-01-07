@@ -20,16 +20,14 @@ const mapStateToProps = ({ uiModalState, channels, uiChannels }) => {
 @connect(mapStateToProps)
 class ChannelsModalForm extends React.Component {
   submit = (values) => {
-    const { uiModalState, cancelChannelEdit, renameChannel } = this.props;
+    const { uiModalState, renameChannel } = this.props;
     const { id, name } = uiModalState.changedChannel;
-    cancelChannelEdit(id);
     return renameChannel({ id, name: values[name] });
   }
 
   deleteChannel = id => () => {
-    const { deleteChannel, cancelChannelEdit } = this.props;
+    const { deleteChannel } = this.props;
     deleteChannel(id);
-    cancelChannelEdit(id);
   }
 
   handleCancel = id => () => {

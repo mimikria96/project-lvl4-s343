@@ -19,6 +19,9 @@ export const channelRenameFailure = createAction('CHANNEL_RENAME_FAILURE');
 export const channelsModalShow = createAction('CHANNELS_MODAL_SHOW');
 export const channelsModalHide = createAction('CHANNELS_MODAL_HIDE');
 
+export const channelsAddingFormShow = createAction('CHANNELS_ADDFORM_SHOW');
+export const channelsAddingFormHide = createAction('CHANNELS_ADDFORM_HIDE');
+
 export const channelRename = createAction('CHANNEL_RENAME');
 export const channelDelete = createAction('CHANNEL_DELETE');
 export const channelAdd = createAction('CHANNEL_ADD');
@@ -37,6 +40,7 @@ export const addNewChannel = ({ name }) => async (dispatch) => {
   try {
     await axios.post(routes.channels(), { data: { attributes: { name } } });
     dispatch(addChannelSuccess());
+    dispatch(channelsAddingFormHide());
   } catch (e) {
     dispatch(addChannelFailure());
   }
@@ -46,6 +50,7 @@ export const deleteChannel = id => async (dispatch) => {
   try {
     await axios.delete(routes.channelChange(id), { params: { id } });
     dispatch(deleteChannelSuccess());
+    dispatch(cancelChannelEdit(id));
   } catch (e) {
     console.log(e);
     dispatch(deleteChannelFailure());
@@ -56,6 +61,7 @@ export const renameChannel = ({ id, name }) => async (dispatch) => {
   try {
     await axios.patch(routes.channelChange(id), { params: { id }, data: { attributes: { name } } });
     dispatch(channelRenameSuccess());
+    dispatch(cancelChannelEdit(id));
   } catch (e) {
     console.log(e);
     dispatch(channelRenameFailure());

@@ -5,31 +5,33 @@ import NewChannelForm from './NewChannelForm';
 import ChannelsModalForm from './ChannelsModalForm';
 import { channelsSelector } from '../../selectors';
 
-const mapStateToProps = ({ channels, channelsModalState, appConnectionState }) => {
+const mapStateToProps = ({
+  channels, channelsModalState, appConnectionState, channelsAddingForm,
+}) => {
   const props = {
     channels: channelsSelector(channels),
     channelsModalState,
     appConnectionState,
+    channelsAddingForm,
   };
   return props;
 };
 
 @connect(mapStateToProps)
 class ChannelsModal extends React.Component {
-  state = { addChannelForm: 'hide' };
-
   newChannelSubmit = (values) => {
     const { addNewChannel } = this.props;
     addNewChannel(values);
-    this.hideForm();
   }
 
   showForm = () => {
-    this.setState({ addChannelForm: 'show' });
+    const { channelsAddingFormShow } = this.props;
+    channelsAddingFormShow();
   }
 
   hideForm = () => {
-    this.setState({ addChannelForm: 'hide' });
+    const { channelsAddingFormHide } = this.props;
+    channelsAddingFormHide();
   }
 
   modalHide = () => {
@@ -38,8 +40,8 @@ class ChannelsModal extends React.Component {
   }
 
   renderChannelForm() {
-    const { addChannelForm } = this.state;
-    if (addChannelForm !== 'show') {
+    const { channelsAddingForm } = this.props;
+    if (channelsAddingForm !== 'show') {
       return null;
     }
     return (
@@ -52,8 +54,8 @@ class ChannelsModal extends React.Component {
   }
 
   renderAddButton() {
-    const { addChannelForm } = this.state;
-    if (addChannelForm !== 'hide') {
+    const { channelsAddingForm } = this.props;
+    if (channelsAddingForm !== 'hide') {
       return null;
     }
     return (
