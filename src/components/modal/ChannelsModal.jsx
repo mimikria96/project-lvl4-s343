@@ -41,7 +41,7 @@ class ChannelsModal extends React.Component {
 
   renderChannelForm() {
     const { channelsAddingForm } = this.props;
-    if (channelsAddingForm !== 'show') {
+    if (channelsAddingForm !== 'shown') {
       return null;
     }
     return (
@@ -55,7 +55,7 @@ class ChannelsModal extends React.Component {
 
   renderAddButton() {
     const { channelsAddingForm } = this.props;
-    if (channelsAddingForm !== 'hide') {
+    if (channelsAddingForm !== 'hidden') {
       return null;
     }
     return (
@@ -76,7 +76,7 @@ class ChannelsModal extends React.Component {
     const { channels, channelsModalState } = this.props;
     const initialValues = channels.reduce((acc, el) => ({ ...acc, [el.name]: el.name }), {});
     return (
-      <Modal show={channelsModalState === 'show'} onHide={this.modalHide}>
+      <Modal show={channelsModalState === 'shown'} onHide={this.modalHide}>
         <Modal.Header closeButton>
           <Modal.Title>
             Channels

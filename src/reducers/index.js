@@ -25,21 +25,21 @@ const currentChannelId = handleActions({
 
 const channelsModalState = handleActions({
   [actions.channelsModalShow]() {
-    return 'show';
+    return 'shown';
   },
   [actions.channelsModalHide]() {
-    return 'hide';
+    return 'hidden';
   },
-}, 'hide');
+}, 'hidden');
 
 const channelsAddingForm = handleActions({
   [actions.channelsAddingFormShow]() {
-    return 'show';
+    return 'shown';
   },
   [actions.channelsAddingFormHide]() {
-    return 'hide';
+    return 'hidden';
   },
-}, 'hide');
+}, 'hidden');
 
 const appConnectionState = handleActions({
   [actions.toggleChannelFailure]() {
